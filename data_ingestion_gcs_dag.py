@@ -60,11 +60,11 @@ with DAG(
     tags=['dtc-de'],
 ) as dag:
 
-    # download_dataset_task = BashOperator(
-    #     task_id="download_dataset_task",
-    #     #bash_command=f"curl -sSL {dataset_url} > {path_to_local_home}/{dataset_file}"
-    #     bash_command=f"for m in {{01..3}}; do wget https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2022-$m.parquet -P {path_to_local_home}; done"
-    # )
+    download_dataset_task = BashOperator(
+        task_id="download_dataset_task",
+        #bash_command=f"curl -sSL {dataset_url} > {path_to_local_home}/{dataset_file}"
+        bash_command=f"for m in {{1..743}}; do wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=FILEID' -P {path_to_local_home}; done"
+    )
 
     # format_to_parquet_task = PythonOperator(
     #     task_id="format_to_parquet_task",
