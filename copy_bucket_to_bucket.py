@@ -1,7 +1,7 @@
 import os
 from google.cloud import storage
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'ServiceKey_GoogleCloud_proudwoods.json'
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'D:\DATA\Data Fellowship IYKRA\CODE\Final Project\ServiceKey_GoogleCloud_proudwoods.json'
 
 def copy_objects(source_bucket_name, destination_bucket_name, prefix=''):
     """Copies a blob from one bucket to another."""
