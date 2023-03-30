@@ -29,7 +29,7 @@ job_config = bigquery.LoadJobConfig(
     # The source format defaults to CSV, so the line below is optional.
     source_format=bigquery.SourceFormat.CSV,
 )
-for counter in range(3, 5):
+for counter in range(4, 6):
     uri = f"gs://online_payment_data_bucket/online_payment_{counter}.csv"
 
     load_job = client.load_table_from_uri(
