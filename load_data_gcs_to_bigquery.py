@@ -1,13 +1,21 @@
 import os
 from google.cloud import bigquery
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'D:\DATA\Data Fellowship IYKRA\CODE\Final Project\ServiceKey_GoogleCloud_proudwoods.json'
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = r'D:\DATA\Data Fellowship IYKRA\CODE\Final Project\fraud-project1-d4d121a8c66e.json'
 
 # Construct a BigQuery client object.
 client = bigquery.Client()
 
+dataset_name = "fraud_payment_dataset"
+table_name = "ML_fraud_payment_dataset"
+dataset_loc = "asia-southeast1"
+
 # TODO(developer): Set table_id to the ID of the table to create.
-table_id = "{}.your_dataset.ML_online_payment_dataset".format(client.project)
+dataset_id = f"{client.project}.{dataset_name}"
+dataset_obj = bigquery.Dataset(dataset_id)
+dataset_obj.location = dataset_loc
+dataset_created = client.create_dataset(dataset_obj, timeout=30, exists_ok=True)
+table_id = f"{dataset_id}.{table_name}"
 
 job_config = bigquery.LoadJobConfig(
     schema=[
@@ -24,19 +32,20 @@ job_config = bigquery.LoadJobConfig(
         bigquery.SchemaField("isFraud", "INT64"),
         bigquery.SchemaField("isFlaggedFraud", "INT64"),
     ],
-    write_disposition=bigquery.WriteDisposition.WRITE_APPEND,
-    skip_leading_rows=1,
-    # The source format defaults to CSV, so the line below is optional.
-    source_format=bigquery.SourceFormat.CSV,
+    write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+    source_format=bigquery.SourceFormat.PARQUET,
+    # The source format for CSV.
+    # skip_leading_rows=1,
+    # source_format=bigquery.SourceFormat.CSV,
 )
-for counter in range(4, 6):
-    uri = f"gs://online_payment_data_bucket/online_payment_{counter}.csv"
+# for counter in range(1, 4):
+uri = f"gs://asia-southeast1-final-proje-f3d92743-bucket/dataset/test_dataset/online_payment_*.parquet"
 
-    load_job = client.load_table_from_uri(
-        uri, table_id, location="asia-southeast1", job_config=job_config
-    )  # Make an API request.
+load_job = client.load_table_from_uri(
+    uri, table_id, location= dataset_loc, job_config=job_config
+)  # Make an API request.
 
-    load_job.result()  # Waits for the job to complete.
+load_job.result()  # Waits for the job to complete.
 
-    destination_table = client.get_table(table_id)  # Make an API request.
-    print("Loaded {} rows.".format(destination_table.num_rows))
+destination_table = client.get_table(table_id)  # Make an API request.
+print("Loaded {} rows.".format(destination_table.num_rows))

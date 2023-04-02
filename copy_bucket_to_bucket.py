@@ -1,7 +1,7 @@
 import os
 from google.cloud import storage
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'D:\DATA\Data Fellowship IYKRA\CODE\Final Project\ServiceKey_GoogleCloud_proudwoods.json'
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = r'D:\DATA\Data Fellowship IYKRA\CODE\Final Project\fraud-project1-d4d121a8c66e.json'
 
 def copy_objects(source_bucket_name, destination_bucket_name, prefix=''):
     """Copies a blob from one bucket to another."""
@@ -29,5 +29,8 @@ def copy_objects(source_bucket_name, destination_bucket_name, prefix=''):
             )
         )
 
-if __name__ == '__main__': 
-    copy_objects('online_payment_data_bucket', 'asia-southeast1-final-proje-293de5e1-bucket')
+if __name__ == '__main__':
+    source_bucket_name ='dataset-fraud'
+    destination_bucket_name = 'asia-southeast1-final-proje-f3d92743-bucket'
+    prefix = "cleaned_dataset/" #optional, use when the data in the bucket is in another folder  
+    copy_objects(source_bucket_name, destination_bucket_name, prefix)
