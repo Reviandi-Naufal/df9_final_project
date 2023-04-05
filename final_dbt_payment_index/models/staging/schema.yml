@@ -4,7 +4,7 @@ models:
   - name: stg_dataset_models
     description: "A starter dbt model"
     columns:
-      - name: id
+      - name: index
         description: "The primary key for this table"
         tests:
           - unique

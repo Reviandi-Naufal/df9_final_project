@@ -5,7 +5,7 @@ models:
   - name: list_table2
     description: "A starter dbt model"
     columns:
-      - name: id
+      - name: index
         description: "The primary key for this table"
         tests:
           - unique
@@ -14,7 +14,7 @@ models:
   - name: list_table3
     description: "A starter dbt model"
     columns:
-      - name: id
+      - name: index
         description: "The primary key for this table"
         tests:
           - unique
@@ -23,7 +23,7 @@ models:
   - name: list_table4
     description: "A starter dbt model"
     columns:
-      - name: id
+      - name: index
         description: "The primary key for this table"
         tests:
           - unique
@@ -32,7 +32,7 @@ models:
   - name: list_table5
     description: "A starter dbt model"
     columns:
-      - name: id
+      - name: index
         description: "The primary key for this table"
         tests:
           - unique
@@ -41,7 +41,7 @@ models:
   - name: list_table6
     description: "A starter dbt model"
     columns:
-      - name: id
+      - name: index
         description: "The primary key for this table"
         tests:
           - unique
@@ -50,7 +50,7 @@ models:
   - name: list_table7
     description: "A starter dbt model"
     columns:
-      - name: id
+      - name: index
         description: "The primary key for this table"
         tests:
           - unique
