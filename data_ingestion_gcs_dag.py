@@ -1,4 +1,5 @@
 import os
+import re
 # from copy_bucket_to_bucket import copy_objects
 # from load_data_gcs_to_bigquery import load_gcs_to_bq
 
@@ -10,12 +11,12 @@ from google.cloud import storage
 from google.cloud import bigquery
 
 def extract_number_source(f):
-    s = re.findall(r"test_data/online_payment_(\d+).parquet",f)
+    s = re.findall(r"cleaned_dataset/online_payment_(\d+).parquet",f)
     print(s)
     return (int(s[0]) if s else -1,f)
 
 def extract_number_dest(f):
-    s = re.findall(r"dataset_test/test_data/online_payment_(\d+).parquet",f)
+    s = re.findall(r"dataset/cleaned_dataset/online_payment_(\d+).parquet",f)
     print(s)
     return (int(s[0]) if s else -1,f)
 
@@ -40,7 +41,7 @@ def copy_objects(source_bucket_name, destination_bucket_name, prefix=''):
     num_source = re.findall(r'cleaned_dataset/online_payment_(\d+).parquet', max_file_source)
     max_num_source = (int(num_source[0]) if num_source else -1)
 
-    for blob_dest in destination_bucket.list_blobs(prefix="dataset_test/"):
+    for blob_dest in destination_bucket.list_blobs(prefix="dataset/"):
         dest_blobs_list.append(str(blob_dest.name))
 
     max_file_dest = max(dest_blobs_list,key=extract_number_dest)
@@ -53,7 +54,7 @@ def copy_objects(source_bucket_name, destination_bucket_name, prefix=''):
     if max_num_source > max_num_dest:
         for blob in source_bucket.list_blobs(prefix=prefix):
             source_blob = source_bucket.blob(blob.name)
-            destination_blob_name = f"dataset_test/{blob.name}"
+            destination_blob_name = f"dataset/{blob.name}"
 
             blob_copy = source_bucket.copy_blob(source_blob, destination_bucket, destination_blob_name)
 
@@ -122,7 +123,7 @@ with DAG(
         # op_kwargs param : source_bucket_name, destination_bucket_name, prefix=''
         op_kwargs = {
             "source_bucket_name" : "dataset-fraud",
-            "destination_bucket_name" : "asia-southeast1-final-proje-f3d92743-bucket",
+            "destination_bucket_name" : "us-central1-fraud-project-1-467d1dec-bucket",
             "prefix" : "cleaned_dataset/"
         },
     ) 
@@ -132,9 +133,9 @@ with DAG(
         python_callable = load_gcs_to_bq,
         # op_kwargs param : dataset_name, table_name, dataset_loc, bq_schema, uri
         op_kwargs = {
-            "dataset_name" : "fraud_payment_dataset",
-            "table_name" : "ML_fraud_payment_dataset",
-            "dataset_loc" : "asia-southeast1",
+            "dataset_name" : "final_dbt_payment_index",
+            "table_name" : "dataset_index",
+            "dataset_loc" : "US",
             "bq_schema" : [
                 bigquery.SchemaField("index", "INT64"),
                 bigquery.SchemaField("step", "INT64"),
@@ -149,7 +150,7 @@ with DAG(
                 bigquery.SchemaField("isFraud", "INT64"),
                 bigquery.SchemaField("isFlaggedFraud", "INT64"),
             ],
-            "uri" : "gs://asia-southeast1-final-proje-f3d92743-bucket/dataset/cleaned_dataset/online_payment_*.parquet"
+            "uri" : "gs://us-central1-fraud-project-1-467d1dec-bucket/dataset/cleaned_dataset/online_payment_*.parquet"
         },
     )
 
