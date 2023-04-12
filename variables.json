@@ -1,8 +1,7 @@
 {
-  "PROJECT_ID": "proud-woods-379212",
-  "GCS_TEMP_LOCATION": "gs://asia-southeast1-final-proje-293de5e1-bucket/temp",
-  "BUCKET_NAME": "asia-southeast1-final-proje-293de5e1-bucket",
-  "ALL_KEYWORDS_BQ_OUTPUT_TABLE": "session2_bq.output",
+  "PROJECT_ID": "fraud-project1",
+  "GCS_TEMP_LOCATION": "gs://asia-southeast1-final-proje-f3d92743-bucket/temp",
+  "BUCKET_NAME": "asia-southeast1-final-proje-f3d92743-bucket",
   "GCS_STG_LOCATION": "gs://asia-southeast1-final-proje-293de5e1-bucket/staging",
   "EVENTS_BQ_TABLE": "session2_bq.event",
   "BIGQUERY_DATASET": "session2_bq"
