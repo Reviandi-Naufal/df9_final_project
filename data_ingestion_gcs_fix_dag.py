@@ -11,12 +11,12 @@ from google.cloud import storage
 from google.cloud import bigquery
 
 def extract_number_source(f):
-    s = re.findall(r"cleaned_dataset/online_payment_(\d+).parquet",f)
+    s = re.findall(r"cleaned_dataset/online_payment_(\d+).csv",f)
     print(s)
     return (int(s[0]) if s else -1,f)
 
 def extract_number_dest(f):
-    s = re.findall(r"dataset/cleaned_dataset/online_payment_(\d+).parquet",f)
+    s = re.findall(r"dataset/cleaned_dataset/online_payment_(\d+).csv",f)
     print(s)
     return (int(s[0]) if s else -1,f)
 
@@ -38,18 +38,18 @@ def copy_objects(source_bucket_name, destination_bucket_name, prefix=''):
         source_blobs_list.append(str(blob_source.name))
     
     max_file_source = max(source_blobs_list,key=extract_number_source)
-    num_source = re.findall(r'cleaned_dataset/online_payment_(\d+).parquet', max_file_source)
+    num_source = re.findall(r'cleaned_dataset/online_payment_(\d+).csv', max_file_source)
     max_num_source = (int(num_source[0]) if num_source else -1)
 
     for blob_dest in destination_bucket.list_blobs(prefix="dataset/"):
         dest_blobs_list.append(str(blob_dest.name))
 
     max_file_dest = max(dest_blobs_list,key=extract_number_dest)
-    num_dest = re.findall(r'dataset/cleaned_dataset/online_payment_(\d+).parquet', max_file_dest)
+    num_dest = re.findall(r'dataset/cleaned_dataset/online_payment_(\d+).csv', max_file_dest)
     max_num_dest = (int(num_dest[0]) if num_dest else -1)
 
     print(f"Max file number in source: {max_num_source}")
-    print(f"Max file number in source: {max_num_dest}")
+    print(f"Max file number in destination: {max_num_dest}")
 
     if max_num_source > max_num_dest:
         for blob in source_bucket.list_blobs(prefix=prefix):
@@ -110,7 +110,7 @@ default_args = {
 # NOTE: DAG declaration - using a Context Manager (an implicit way)
 with DAG(
     dag_id="data_ingestion_gcs_dag",
-    schedule_interval="@daily",
+    schedule_interval="@hourly",
     default_args=default_args,
     catchup=False,
     max_active_runs=1,
@@ -150,7 +150,7 @@ with DAG(
                 bigquery.SchemaField("isFraud", "INT64"),
                 bigquery.SchemaField("isFlaggedFraud", "INT64"),
             ],
-            "uri" : "gs://us-central1-fraud-project-1-467d1dec-bucket/dataset/cleaned_dataset/online_payment_*.parquet"
+            "uri" : "gs://us-central1-fraud-project-1-467d1dec-bucket/dataset/cleaned_dataset/online_payment_*.csv"
         },
     )
 
